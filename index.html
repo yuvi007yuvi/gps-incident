@@ -2,316 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GPS Incident Report (Damage/Loss)</title>
-  <!-- Tailwind CSS (optional, for quick modern styling) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPS Incident Report</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- jsPDF & html2canvas for PDF export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-/6x4j8T3q2y1K3u3f5mWrOeQWJb4lV1Qn6k3gH7UHQXx4WkYzV8m7j7rH3b4C8St9kz6y+N1h9zT8V8M9+2n0w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNa5H0x9TZ+ZqkPXg9+3p1KQ5lS6wJ0g8W0QpDgzdB2nWmHnK7U7Y9pVwDqfRk9s1cQq9mM1n8n4p8u4aJ7Yfg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <style>
-    @media print { .no-print { display:none !important; } }
-  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
-<body class="bg-slate-50 min-h-screen">
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
-    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-      <h1 class="text-xl md:text-2xl font-semibold text-slate-800">GPS Incident Report — Damage / Loss</h1>
-      <span class="text-xs text-slate-500">v1.0</span>
+<body class="bg-gray-100">
+  <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 mt-8">
+    <!-- Company Logo -->
+    <div class="flex justify-center mb-6">
+      <img src="log.jpg" alt="Company Logo" class="h-16 object-contain" />
     </div>
-  </header>
 
-  <main class="max-w-5xl mx-auto px-4 py-6">
-    <!-- FORM CARD -->
-    <section class="bg-white shadow-sm rounded-2xl border border-slate-200 p-5 md:p-6">
-      <h2 class="text-lg font-semibold text-slate-700 mb-4">Capture Details</h2>
-      <form id="incidentForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Reporter Information -->
-        <div class="col-span-1">
-          <label class="block text-sm text-slate-600">Reporter Name<span class="text-red-500"> *</span></label>
-          <input required name="reporterName" class="mt-1 w-full border rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Full name" />
-        </div>
-        <div class="col-span-1">
-          <label class="block text-sm text-slate-600">Reporter Contact<span class="text-red-500"> *</span></label>
-          <input required name="reporterContact" class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="Phone or email" />
-        </div>
-
-        <!-- Device Information -->
+    <h2 class="text-2xl font-bold mb-4 text-center">GPS Damage / Lost Incident Report</h2>
+    <form id="incidentForm" class="space-y-4">
+      <div>
+        <label class="block font-medium">Reporter Name</label>
+        <input type="text" name="reporter" class="w-full border rounded p-2" required />
+      </div>
+      <div>
+        <label class="block font-medium">Device ID / IMEI</label>
+        <input type="text" name="deviceId" class="w-full border rounded p-2" required />
+      </div>
+      <div>
+        <label class="block font-medium">Incident Type</label>
+        <select name="incidentType" class="w-full border rounded p-2" required>
+          <option value="Damage">Damage</option>
+          <option value="Lost">Lost</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm text-slate-600">Device ID / IMEI<span class="text-red-500"> *</span></label>
-          <input required name="deviceId" class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="e.g., IMEI 3597..." />
-        </div>
-        <div>
-          <label class="block text-sm text-slate-600">Asset / Vehicle #</label>
-          <input name="assetNumber" class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="Optional" />
-        </div>
-
-        <!-- Incident Information -->
-        <div>
-          <label class="block text-sm text-slate-600">Incident Type<span class="text-red-500"> *</span></label>
-          <select required name="incidentType" class="mt-1 w-full border rounded-xl px-3 py-2 bg-white">
-            <option value="">Select</option>
-            <option>Damaged</option>
-            <option>Lost</option>
-            <option>Stolen</option>
-            <option>Other</option>
-          </select>
+          <label class="block font-medium">Date</label>
+          <input type="date" name="date" class="w-full border rounded p-2" required />
         </div>
         <div>
-          <label class="block text-sm text-slate-600">Incident Date & Time<span class="text-red-500"> *</span></label>
-          <input required type="datetime-local" name="incidentDateTime" class="mt-1 w-full border rounded-xl px-3 py-2" />
-        </div>
-
-        <div class="md:col-span-2">
-          <label class="block text-sm text-slate-600">Incident Location (Address / Coordinates)<span class="text-red-500"> *</span></label>
-          <input required name="incidentLocation" class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="e.g., 27.4928, 77.6737 or full address" />
-        </div>
-
-        <div class="md:col-span-2">
-          <label class="block text-sm text-slate-600">Incident Description<span class="text-red-500"> *</span></label>
-          <textarea required name="incidentDescription" rows="4" class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="Describe what happened, visible damages, last known location, attempts made, etc."></textarea>
-        </div>
-
-        <!-- Evidence Upload -->
-        <div>
-          <label class="block text-sm text-slate-600">Attach Photo (JPG/PNG, max 5 MB)</label>
-          <input id="photoInput" type="file" accept="image/*" class="mt-1 w-full border rounded-xl px-3 py-2 bg-white" />
-          <p class="text-xs text-slate-500 mt-1">Preview shown in the report. You can also paste an image from clipboard.</p>
-        </div>
-        <div>
-          <label class="block text-sm text-slate-600">Reference # (Optional)</label>
-          <input name="referenceNumber" class="mt-1 w-full border rounded-xl px-3 py-2" placeholder="Ticket/Case ID" />
-        </div>
-
-        <!-- Submit Controls -->
-        <div class="md:col-span-2 flex items-center gap-3 mt-2 no-print">
-          <button type="button" id="previewBtn" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700">Preview Report</button>
-          <button type="button" id="exportBtn" disabled class="px-4 py-2 rounded-xl bg-slate-300 text-slate-600 font-medium cursor-not-allowed">Export as PDF</button>
-          <button type="reset" id="resetBtn" class="ml-auto px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50">Reset</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- REPORT PREVIEW -->
-    <section id="reportSection" class="mt-6 hidden">
-      <div id="reportCard" class="bg-white shadow-sm rounded-2xl border border-slate-200 p-6">
-        <div class="flex items-start justify-between">
-          <div>
-            <h3 class="text-xl font-semibold text-slate-800">GPS Incident Report</h3>
-            <p class="text-xs text-slate-500">Auto-generated from submitted form</p>
-          </div>
-          <img id="brandLogo" alt="Logo" class="w-16 h-16 object-contain" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Crect width='100%25' height='100%25' fill='%23EEF2FF'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='18' fill='%233818D9'%3EGPS%3C/text%3E%3C/svg%3E"/>
-        </div>
-        <hr class="my-4" />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <p class="text-slate-500">Reporter</p>
-            <p id="rReporter" class="font-medium"></p>
-          </div>
-          <div>
-            <p class="text-slate-500">Contact</p>
-            <p id="rContact" class="font-medium"></p>
-          </div>
-          <div>
-            <p class="text-slate-500">Device ID / IMEI</p>
-            <p id="rDeviceId" class="font-medium"></p>
-          </div>
-          <div>
-            <p class="text-slate-500">Asset / Vehicle #</p>
-            <p id="rAsset" class="font-medium"></p>
-          </div>
-          <div>
-            <p class="text-slate-500">Incident Type</p>
-            <p id="rType" class="font-medium"></p>
-          </div>
-          <div>
-            <p class="text-slate-500">Date & Time</p>
-            <p id="rDateTime" class="font-medium"></p>
-          </div>
-          <div class="md:col-span-2">
-            <p class="text-slate-500">Location</p>
-            <p id="rLocation" class="font-medium break-words"></p>
-          </div>
-          <div class="md:col-span-2">
-            <p class="text-slate-500">Description</p>
-            <p id="rDescription" class="font-medium whitespace-pre-wrap"></p>
-          </div>
-          <div>
-            <p class="text-slate-500">Reference #</p>
-            <p id="rRef" class="font-medium"></p>
-          </div>
-        </div>
-
-        <div class="mt-6">
-          <p class="text-slate-500 text-sm mb-2">Attached Photo</p>
-          <div class="border border-slate-200 rounded-xl overflow-hidden">
-            <img id="rPhoto" class="w-full max-h-[480px] object-contain bg-slate-50" alt="Attached evidence" />
-          </div>
-        </div>
-
-        <div class="mt-6 text-xs text-slate-500 flex items-center justify-between">
-          <p>Generated: <span id="rGenerated"></span></p>
-          <p>Signature: __________________________</p>
+          <label class="block font-medium">Time</label>
+          <input type="time" name="time" class="w-full border rounded p-2" required />
         </div>
       </div>
-      <div class="mt-4 flex gap-3 no-print">
-        <button id="exportBtn2" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700">Export as PDF</button>
-        <button id="editBtn" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50">Edit Form</button>
+      <div>
+        <label class="block font-medium">Location</label>
+        <input type="text" name="location" class="w-full border rounded p-2" required />
       </div>
-    </section>
-  </main>
-
-  <footer class="max-w-5xl mx-auto px-4 py-8 text-center text-xs text-slate-400">
-    © <span id="year"></span> GPS Incident Workflow — Internal Use Only
-  </footer>
+      <div>
+        <label class="block font-medium">Description</label>
+        <textarea name="description" class="w-full border rounded p-2" required></textarea>
+      </div>
+      <div>
+        <label class="block font-medium">Reference Number (Optional)</label>
+        <input type="text" name="reference" class="w-full border rounded p-2" />
+      </div>
+      <div>
+        <label class="block font-medium">Attach Photo</label>
+        <input type="file" id="photo" accept="image/*" class="w-full" />
+      </div>
+      <div>
+        <button type="button" onclick="generatePDF()" class="bg-blue-600 text-white px-4 py-2 rounded">Export as PDF</button>
+      </div>
+    </form>
+  </div>
 
   <script>
-    const form = document.getElementById('incidentForm');
-    const previewBtn = document.getElementById('previewBtn');
-    const exportBtn = document.getElementById('exportBtn');
-    const exportBtn2 = document.getElementById('exportBtn2');
-    const resetBtn = document.getElementById('resetBtn');
-    const reportSection = document.getElementById('reportSection');
-    const reportCard = document.getElementById('reportCard');
-    const photoInput = document.getElementById('photoInput');
-
-    // Populate year
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Allow paste image from clipboard
-    window.addEventListener('paste', async (e) => {
-      const item = [...e.clipboardData.items].find(i => i.type.startsWith('image/'));
-      if (item) {
-        const file = item.getAsFile();
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        photoInput.files = dt.files;
-      }
-    });
-
-    // Read image as data URL (returns Promise)
-    const readFileAsDataURL = (file) => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-
-    // Build the report preview from form values
-    async function buildPreview() {
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return false;
-      }
-
-      const fd = new FormData(form);
-      const values = Object.fromEntries(fd.entries());
-
-      // Basic assignments
-      document.getElementById('rReporter').textContent = values.reporterName || '-';
-      document.getElementById('rContact').textContent = values.reporterContact || '-';
-      document.getElementById('rDeviceId').textContent = values.deviceId || '-';
-      document.getElementById('rAsset').textContent = values.assetNumber || '-';
-      document.getElementById('rType').textContent = values.incidentType || '-';
-      document.getElementById('rDateTime').textContent = values.incidentDateTime ? new Date(values.incidentDateTime).toLocaleString() : '-';
-      document.getElementById('rLocation').textContent = values.incidentLocation || '-';
-      document.getElementById('rDescription').textContent = values.incidentDescription || '-';
-      document.getElementById('rRef').textContent = values.referenceNumber || '-';
-      document.getElementById('rGenerated').textContent = new Date().toLocaleString();
-
-      // Handle image (validate size <= 5MB)
-      const file = photoInput.files && photoInput.files[0];
-      const imgEl = document.getElementById('rPhoto');
-      if (file) {
-        if (file.size > 5 * 1024 * 1024) {
-          alert('Attached image is larger than 5 MB. Please choose a smaller file.');
-          return false;
-        }
-        const dataUrl = await readFileAsDataURL(file);
-        imgEl.src = dataUrl;
-        imgEl.classList.remove('hidden');
-      } else {
-        imgEl.removeAttribute('src');
-        imgEl.classList.add('hidden');
-      }
-
-      // Reveal report & enable export
-      reportSection.classList.remove('hidden');
-      exportBtn.disabled = false;
-      exportBtn.classList.remove('bg-slate-300', 'text-slate-600', 'cursor-not-allowed');
-      exportBtn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
-      return true;
-    }
-
-    // Export the visible report as a paginated A4 PDF
-    async function exportPDF() {
-      // Ensure images/fonts are ready
-      await new Promise(r => setTimeout(r, 200));
-
+    async function generatePDF() {
       const { jsPDF } = window.jspdf;
-      const A4_WIDTH = 210; // mm
-      const A4_HEIGHT = 297; // mm
+      const form = document.getElementById("incidentForm");
 
-      // Render report to canvas
-      const canvas = await html2canvas(reportCard, { scale: 2, backgroundColor: '#ffffff' });
-      const imgData = canvas.toDataURL('image/png');
+      // Create a container for PDF content
+      const pdfContent = document.createElement("div");
+      pdfContent.innerHTML = `
+        <div style="padding:20px; font-family:sans-serif;">
+          <div style="text-align:center; margin-bottom:20px;">
+            <img src='https://via.placeholder.com/150x50?text=Company+Logo' style="height:50px;" />
+          </div>
+          <h2 style="text-align:center; margin-bottom:20px;">GPS Damage / Lost Incident Report</h2>
+          <p><b>Reporter Name:</b> ${form.reporter.value}</p>
+          <p><b>Device ID / IMEI:</b> ${form.deviceId.value}</p>
+          <p><b>Incident Type:</b> ${form.incidentType.value}</p>
+          <p><b>Date:</b> ${form.date.value}</p>
+          <p><b>Time:</b> ${form.time.value}</p>
+          <p><b>Location:</b> ${form.location.value}</p>
+          <p><b>Description:</b> ${form.description.value}</p>
+          <p><b>Reference Number:</b> ${form.reference.value}</p>
+          <div id='pdfImage'></div>
+        </div>`;
 
-      // Calculate dimensions
-      const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
-      const pageWidth = A4_WIDTH;
-      const pageHeight = A4_HEIGHT;
+      const file = document.getElementById("photo").files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.style.maxWidth = "100%";
+          document.getElementById("pdfImage").appendChild(img);
 
-      // Image aspect ratio to fit width
-      const imgProps = { width: pageWidth, height: (canvas.height * pageWidth) / canvas.width };
-
-      let y = 0;
-      let remainingHeight = imgProps.height;
-
-      // Add pages as needed (slice vertically)
-      const canvasPageHeightPx = (canvas.width * pageHeight) / pageWidth; // px height that fits one page
-      let renderedHeight = 0;
-
-      while (remainingHeight > 0) {
-        const pageCanvas = document.createElement('canvas');
-        pageCanvas.width = canvas.width;
-        pageCanvas.height = Math.min(canvasPageHeightPx, canvas.height - renderedHeight);
-        const pageCtx = pageCanvas.getContext('2d');
-        pageCtx.drawImage(
-          canvas,
-          0, renderedHeight, canvas.width, pageCanvas.height,
-          0, 0, canvas.width, pageCanvas.height
-        );
-        const pageImgData = pageCanvas.toDataURL('image/png');
-        if (y > 0) pdf.addPage();
-        pdf.addImage(pageImgData, 'PNG', 0, 0, pageWidth, (pageCanvas.height * pageWidth) / canvas.width);
-        renderedHeight += pageCanvas.height;
-        remainingHeight = ((canvas.height - renderedHeight) * pageWidth) / canvas.width;
-        y += pageHeight;
+          await exportToPDF(pdfContent);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        await exportToPDF(pdfContent);
       }
-
-      // Filename
-      const ref = document.getElementById('rRef').textContent || 'NA';
-      const device = document.getElementById('rDeviceId').textContent || 'Device';
-      const dt = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
-      const filename = `GPS-Incident-${device}-${ref}-${dt}.pdf`;
-      pdf.save(filename);
     }
 
-    previewBtn.addEventListener('click', buildPreview);
-    exportBtn.addEventListener('click', async () => { if (await buildPreview()) exportPDF(); });
-    exportBtn2.addEventListener('click', exportPDF);
+    async function exportToPDF(content) {
+      const { jsPDF } = window.jspdf;
+      const canvas = await html2canvas(content, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
 
-    document.getElementById('editBtn').addEventListener('click', () => {
-      reportSection.classList.add('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-    resetBtn.addEventListener('click', () => {
-      reportSection.classList.add('hidden');
-      exportBtn.disabled = true;
-      exportBtn.classList.add('bg-slate-300', 'text-slate-600', 'cursor-not-allowed');
-      exportBtn.classList.remove('bg-indigo-600', 'text-white', 'hover:bg-indigo-700');
-    });
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("gps_incident_report.pdf");
+    }
   </script>
 </body>
 </html>
