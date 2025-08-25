@@ -1,121 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GPS Incident Report</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>GPS Damage/Loss Incident Report</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-  <div class="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-6 mt-8">
-    <!-- Company Logo -->
+<body class="bg-gray-100 p-6">
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <!-- Logo -->
     <div class="flex justify-center mb-6">
-      <img src="log.jpg" alt="Company Logo" class="h-16 object-contain" />
+      <img src="https://via.placeholder.com/150x60?text=Company+Logo" alt="Company Logo" class="h-16">
     </div>
 
-    <h2 class="text-2xl font-bold mb-4 text-center">GPS Damage / Lost Incident Report</h2>
+    <h2 class="text-2xl font-bold mb-4 text-center">GPS Damage/Loss Incident Report</h2>
+
+    <!-- Form -->
     <form id="incidentForm" class="space-y-4">
       <div>
-        <label class="block font-medium">Reporter Name</label>
-        <input type="text" name="reporter" class="w-full border rounded p-2" required />
+        <label class="block font-medium">Driver Name</label>
+        <input type="text" name="driverName" required class="w-full border p-2 rounded">
+      </div>
+      <div>
+        <label class="block font-medium">Driver Number</label>
+        <input type="tel" name="driverNumber" required class="w-full border p-2 rounded">
+      </div>
+      <div>
+        <label class="block font-medium">Supervisor Name</label>
+        <input type="text" name="supervisorName" required class="w-full border p-2 rounded">
       </div>
       <div>
         <label class="block font-medium">Device ID / IMEI</label>
-        <input type="text" name="deviceId" class="w-full border rounded p-2" required />
+        <input type="text" name="deviceId" required class="w-full border p-2 rounded">
       </div>
       <div>
         <label class="block font-medium">Incident Type</label>
-        <select name="incidentType" class="w-full border rounded p-2" required>
+        <select name="incidentType" required class="w-full border p-2 rounded">
           <option value="Damage">Damage</option>
           <option value="Lost">Lost</option>
         </select>
       </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block font-medium">Date</label>
-          <input type="date" name="date" class="w-full border rounded p-2" required />
-        </div>
-        <div>
-          <label class="block font-medium">Time</label>
-          <input type="time" name="time" class="w-full border rounded p-2" required />
-        </div>
+      <div>
+        <label class="block font-medium">Incident Date</label>
+        <input type="date" name="incidentDate" required class="w-full border p-2 rounded">
       </div>
       <div>
         <label class="block font-medium">Location</label>
-        <input type="text" name="location" class="w-full border rounded p-2" required />
+        <input type="text" name="location" required class="w-full border p-2 rounded">
       </div>
       <div>
         <label class="block font-medium">Description</label>
-        <textarea name="description" class="w-full border rounded p-2" required></textarea>
-      </div>
-      <div>
-        <label class="block font-medium">Reference Number (Optional)</label>
-        <input type="text" name="reference" class="w-full border rounded p-2" />
+        <textarea name="description" required class="w-full border p-2 rounded"></textarea>
       </div>
       <div>
         <label class="block font-medium">Attach Photo</label>
-        <input type="file" id="photo" accept="image/*" class="w-full" />
+        <input type="file" name="photo" accept="image/*" class="w-full border p-2 rounded">
+      </div>
+
+      <!-- Signature Uploads -->
+      <div>
+        <label class="block font-medium">GPS Incharge Signature</label>
+        <input type="file" name="gpsSignature" accept="image/*" class="w-full border p-2 rounded">
       </div>
       <div>
-        <button type="button" onclick="generatePDF()" class="bg-blue-600 text-white px-4 py-2 rounded">Export as PDF</button>
+        <label class="block font-medium">IT Head Signature</label>
+        <input type="file" name="itSignature" accept="image/*" class="w-full border p-2 rounded">
       </div>
+      <div>
+        <label class="block font-medium">Project Head Signature</label>
+        <input type="file" name="projectSignature" accept="image/*" class="w-full border p-2 rounded">
+      </div>
+
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Generate PDF</button>
     </form>
   </div>
 
   <script>
-    async function generatePDF() {
+    document.getElementById("incidentForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
       const { jsPDF } = window.jspdf;
-      const form = document.getElementById("incidentForm");
+      const doc = new jsPDF();
 
-      // Create a container for PDF content
-      const pdfContent = document.createElement("div");
-      pdfContent.innerHTML = `
-        <div style="padding:20px; font-family:sans-serif;">
-          <div style="text-align:center; margin-bottom:20px;">
-            <img src='https://via.placeholder.com/150x50?text=Company+Logo' style="height:50px;" />
-          </div>
-          <h2 style="text-align:center; margin-bottom:20px;">GPS Damage / Lost Incident Report</h2>
-          <p><b>Reporter Name:</b> ${form.reporter.value}</p>
-          <p><b>Device ID / IMEI:</b> ${form.deviceId.value}</p>
-          <p><b>Incident Type:</b> ${form.incidentType.value}</p>
-          <p><b>Date:</b> ${form.date.value}</p>
-          <p><b>Time:</b> ${form.time.value}</p>
-          <p><b>Location:</b> ${form.location.value}</p>
-          <p><b>Description:</b> ${form.description.value}</p>
-          <p><b>Reference Number:</b> ${form.reference.value}</p>
-          <div id='pdfImage'></div>
-        </div>`;
+      let y = 20;
 
-      const file = document.getElementById("photo").files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = async function (e) {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.style.maxWidth = "100%";
-          document.getElementById("pdfImage").appendChild(img);
+      // Logo
+      doc.setFontSize(18);
+      doc.text("GPS Damage/Loss Incident Report", 105, y, { align: "center" });
+      y += 10;
 
-          await exportToPDF(pdfContent);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        await exportToPDF(pdfContent);
+      // Form fields
+      doc.setFontSize(12);
+      doc.text(`Driver Name: ${formData.get("driverName")}`, 20, y); y += 8;
+      doc.text(`Driver Number: ${formData.get("driverNumber")}`, 20, y); y += 8;
+      doc.text(`Supervisor Name: ${formData.get("supervisorName")}`, 20, y); y += 8;
+      doc.text(`Device ID/IMEI: ${formData.get("deviceId")}`, 20, y); y += 8;
+      doc.text(`Incident Type: ${formData.get("incidentType")}`, 20, y); y += 8;
+      doc.text(`Incident Date: ${formData.get("incidentDate")}`, 20, y); y += 8;
+      doc.text(`Location: ${formData.get("location")}`, 20, y); y += 8;
+
+      // Description (multi-line)
+      const desc = doc.splitTextToSize(`Description: ${formData.get("description")}`, 170);
+      doc.text(desc, 20, y); 
+      y += desc.length * 8;
+
+      // Photo if uploaded
+      const photo = formData.get("photo");
+      if (photo && photo.size > 0) {
+        const imgData = await toBase64(photo);
+        doc.addImage(imgData, "JPEG", 20, y, 60, 40);
+        y += 50;
       }
-    }
 
-    async function exportToPDF(content) {
-      const { jsPDF } = window.jspdf;
-      const canvas = await html2canvas(content, { scale: 2 });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
+      // Signatures Row
+      let sigY = 260; // Fixed near bottom
+      const gpsSig = formData.get("gpsSignature");
+      const itSig = formData.get("itSignature");
+      const projSig = formData.get("projectSignature");
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      if (gpsSig && gpsSig.size > 0) {
+        const imgData = await toBase64(gpsSig);
+        doc.addImage(imgData, "PNG", 20, sigY, 40, 20);
+        doc.text("GPS Incharge", 30, sigY + 25, { align: "center" });
+      }
+      if (itSig && itSig.size > 0) {
+        const imgData = await toBase64(itSig);
+        doc.addImage(imgData, "PNG", 85, sigY, 40, 20);
+        doc.text("IT Head", 105, sigY + 25, { align: "center" });
+      }
+      if (projSig && projSig.size > 0) {
+        const imgData = await toBase64(projSig);
+        doc.addImage(imgData, "PNG", 150, sigY, 40, 20);
+        doc.text("Project Head", 170, sigY + 25, { align: "center" });
+      }
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("gps_incident_report.pdf");
+      // Save PDF
+      doc.save("GPS_Incident_Report.pdf");
+    });
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
     }
   </script>
 </body>
