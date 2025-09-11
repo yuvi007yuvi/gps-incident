@@ -2,81 +2,340 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>GPS Damage/Loss Incident Report</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GPS Device Incident Report</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+    }
+    .signature-box {
+      border: 2px dashed #cbd5e0;
+      min-height: 80px;
+      background: #f7fafc;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
-    <!-- Logo -->
-    <div class="flex justify-center mb-6">
-      <img src="log.jpg" alt="Company Logo" class="h-20">
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto bg-white shadow-2xl rounded-lg overflow-hidden">
+      
+      <!-- Header Section -->
+      <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+              <span class="text-blue-600 font-bold text-xl">GPS</span>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold">GPS Device Incident Report</h1>
+              <p class="text-blue-100">Damage/Loss Documentation Form</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-sm text-blue-100">Report ID:</p>
+            <p class="font-mono text-lg" id="reportId">GPS-2024-001</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Content -->
+      <div class="p-8">
+        <form id="incidentForm" class="space-y-8">
+          
+          <!-- Basic Information Section -->
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <span class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">1</span>
+              Basic Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Report Date *</label>
+                <input type="date" name="reportDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Report Time *</label>
+                <input type="time" name="reportTime" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Personnel Information Section -->
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <span class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">2</span>
+              Personnel Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Driver Full Name *</label>
+                <input type="text" name="driverName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Employee ID *</label>
+                <input type="text" name="employeeId" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Contact Number *</label>
+                <input type="tel" name="driverNumber" required pattern="[0-9]{10,15}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Department *</label>
+                <select name="department" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">Select Department</option>
+                  <option value="Logistics">Logistics</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Field Operations">Field Operations</option>
+                  <option value="Security">Security</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Immediate Supervisor *</label>
+                <input type="text" name="supervisorName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Supervisor Contact</label>
+                <input type="tel" name="supervisorContact" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Device Information Section -->
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <span class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">3</span>
+              Device Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Device ID / IMEI *</label>
+                <input type="text" name="deviceId" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Device Model/Brand</label>
+                <input type="text" name="deviceModel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
+                <input type="text" name="serialNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Assignment Date</label>
+                <input type="date" name="assignmentDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Incident Details Section -->
+          <div class="bg-red-50 p-6 rounded-lg border border-red-200">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <span class="bg-red-100 text-red-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">4</span>
+              Incident Details
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Incident Type *</label>
+                <select name="incidentType" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">Select Incident Type</option>
+                  <option value="Physical Damage">Physical Damage</option>
+                  <option value="Complete Loss">Complete Loss</option>
+                  <option value="Theft">Theft</option>
+                  <option value="Water Damage">Water Damage</option>
+                  <option value="Fire Damage">Fire Damage</option>
+                  <option value="Malfunction">Technical Malfunction</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Severity Level *</label>
+                <select name="severityLevel" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="">Select Severity</option>
+                  <option value="Minor">Minor (Repairable)</option>
+                  <option value="Major">Major (Extensive Damage)</option>
+                  <option value="Total Loss">Total Loss (Replacement Required)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Incident Date *</label>
+                <input type="date" name="incidentDate" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Incident Time</label>
+                <input type="time" name="incidentTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Incident Location *</label>
+              <input type="text" name="location" required placeholder="Provide detailed location (Address, GPS coordinates if available)" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-2">Detailed Description *</label>
+              <textarea name="description" required rows="4" placeholder="Provide a comprehensive description of the incident, including circumstances leading to the damage/loss, weather conditions, and any other relevant details..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Was incident reported to authorities?</label>
+                <select name="reportedToAuthorities" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                  <option value="No">No</option>
+                  <option value="Yes">Yes</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Police/Authority Reference No.</label>
+                <input type="text" name="authorityRefNo" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Evidence Section -->
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <span class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">5</span>
+              Evidence & Documentation
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Incident Photos</label>
+                <input type="file" name="photos" accept="image/*" multiple class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500 mt-1">Upload multiple photos showing the damage/incident scene</p>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Witness Name(s)</label>
+                <input type="text" name="witnesses" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Names and contact details of any witnesses">
+              </div>
+            </div>
+          </div>
+
+          <!-- Financial Information -->
+          <div class="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+              <span class="bg-yellow-100 text-yellow-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">6</span>
+              Financial Information
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Device Purchase Value</label>
+                <input type="number" name="purchaseValue" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Estimated Repair Cost</label>
+                <input type="number" name="repairCost" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Digital Signatures Section -->
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+              <span class="bg-blue-100 text-blue-800 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm font-bold">7</span>
+              Approvals & Signatures
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="text-center">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Employee Signature</label>
+                <div class="signature-box rounded-lg p-4 mb-2">
+                  <input type="file" name="employeeSignature" accept="image/*" class="w-full">
+                </div>
+                <div class="text-xs text-gray-500">
+                  <div>Date: ________________</div>
+                  <div class="mt-2">Employee Acknowledgment</div>
+                </div>
+              </div>
+              
+              <div class="text-center">
+                <label class="block text-sm font-medium text-gray-700 mb-2">GPS Incharge Signature</label>
+                <div class="signature-box rounded-lg p-4 mb-2">
+                  <input type="file" name="gpsSignature" accept="image/*" class="w-full">
+                </div>
+                <div class="text-xs text-gray-500">
+                  <div>Date: ________________</div>
+                  <div class="mt-2">Verification & Review</div>
+                </div>
+              </div>
+              
+              <div class="text-center">
+                <label class="block text-sm font-medium text-gray-700 mb-2">IT Head Signature</label>
+                <div class="signature-box rounded-lg p-4 mb-2">
+                  <input type="file" name="itSignature" accept="image/*" class="w-full">
+                </div>
+                <div class="text-xs text-gray-500">
+                  <div>Date: ________________</div>
+                  <div class="mt-2">Technical Assessment</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              <div class="text-center">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Project Head Signature</label>
+                <div class="signature-box rounded-lg p-4 mb-2">
+                  <input type="file" name="projectSignature" accept="image/*" class="w-full">
+                </div>
+                <div class="text-xs text-gray-500">
+                  <div>Date: ________________</div>
+                  <div class="mt-2">Final Approval</div>
+                </div>
+              </div>
+              
+              <div class="text-center">
+                <label class="block text-sm font-medium text-gray-700 mb-2">HR/Admin Signature</label>
+                <div class="signature-box rounded-lg p-4 mb-2">
+                  <input type="file" name="hrSignature" accept="image/*" class="w-full">
+                </div>
+                <div class="text-xs text-gray-500">
+                  <div>Date: ________________</div>
+                  <div class="mt-2">Administrative Review</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex space-x-4 pt-6 no-print">
+            <button type="submit" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg flex items-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Generate PDF Report
+            </button>
+            <button type="button" onclick="window.print()" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-medium transition-all duration-200 flex items-center">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+              </svg>
+              Print Report
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-
-    <h2 class="text-2xl font-bold mb-4 text-center">GPS Damage/Loss Incident Report</h2>
-
-    <!-- Form -->
-    <form id="incidentForm" class="space-y-4">
-      <div>
-        <label class="block font-medium">Driver Name</label>
-        <input type="text" name="driverName" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">Driver Number</label>
-        <input type="tel" name="driverNumber" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">Supervisor Name</label>
-        <input type="text" name="supervisorName" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">Device ID / IMEI</label>
-        <input type="text" name="deviceId" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">Incident Type</label>
-        <select name="incidentType" required class="w-full border p-2 rounded">
-          <option value="Damage">Damage</option>
-          <option value="Lost">Lost</option>
-        </select>
-      </div>
-      <div>
-        <label class="block font-medium">Incident Date</label>
-        <input type="date" name="incidentDate" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">Location</label>
-        <input type="text" name="location" required class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">Description</label>
-        <textarea name="description" required class="w-full border p-2 rounded"></textarea>
-      </div>
-      <div>
-        <label class="block font-medium">Attach Photo</label>
-        <input type="file" name="photo" accept="image/*" class="w-full border p-2 rounded">
-      </div>
-
-      <!-- Signature Uploads -->
-      <div>
-        <label class="block font-medium">GPS Incharge Signature</label>
-        <input type="file" name="gpsSignature" accept="image/*" class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">IT Head Signature</label>
-        <input type="file" name="itSignature" accept="image/*" class="w-full border p-2 rounded">
-      </div>
-      <div>
-        <label class="block font-medium">Project Head Signature</label>
-        <input type="file" name="projectSignature" accept="image/*" class="w-full border p-2 rounded">
-      </div>
-
-      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Generate PDF</button>
-    </form>
   </div>
 
   <script>
+    // Generate unique report ID
+    document.addEventListener('DOMContentLoaded', function() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const time = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+      const reportId = `GPS-${year}${month}${day}-${time}`;
+      document.getElementById('reportId').textContent = reportId;
+      
+      // Set current date and time
+      const dateInput = document.querySelector('input[name="reportDate"]');
+      const timeInput = document.querySelector('input[name="reportTime"]');
+      if (dateInput) dateInput.value = `${year}-${month}-${day}`;
+      if (timeInput) timeInput.value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    });
+
     document.getElementById("incidentForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
@@ -85,61 +344,184 @@
       const doc = new jsPDF();
 
       let y = 20;
+      const pageHeight = doc.internal.pageSize.height;
 
-      // Logo
-      doc.setFontSize(18);
-      doc.text("GPS Damage/Loss Incident Report", 105, y, { align: "center" });
+      // Header
+      doc.setFontSize(20);
+      doc.setTextColor(25, 118, 210);
+      doc.text("GPS DEVICE INCIDENT REPORT", 105, y, { align: "center" });
+      y += 10;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Report ID: ${document.getElementById('reportId').textContent}`, 105, y, { align: "center" });
+      y += 15;
+
+      // Check if we need a new page
+      function checkPageBreak(additionalHeight = 20) {
+        if (y + additionalHeight > pageHeight - 20) {
+          doc.addPage();
+          y = 20;
+        }
+      }
+
+      // Helper function to add section
+      function addSection(title, fields) {
+        checkPageBreak(30);
+        doc.setFontSize(14);
+        doc.setTextColor(0, 0, 0);
+        doc.text(title, 20, y);
+        y += 8;
+        doc.setLineWidth(0.5);
+        doc.line(20, y, 190, y);
+        y += 8;
+
+        doc.setFontSize(10);
+        fields.forEach(field => {
+          checkPageBreak(8);
+          const value = formData.get(field.name) || 'Not provided';
+          doc.text(`${field.label}: ${value}`, 25, y);
+          y += 6;
+        });
+        y += 5;
+      }
+
+      // Add sections
+      addSection("BASIC INFORMATION", [
+        { name: "reportDate", label: "Report Date" },
+        { name: "reportTime", label: "Report Time" }
+      ]);
+
+      addSection("PERSONNEL INFORMATION", [
+        { name: "driverName", label: "Driver Name" },
+        { name: "employeeId", label: "Employee ID" },
+        { name: "driverNumber", label: "Contact Number" },
+        { name: "department", label: "Department" },
+        { name: "supervisorName", label: "Supervisor" },
+        { name: "supervisorContact", label: "Supervisor Contact" }
+      ]);
+
+      addSection("DEVICE INFORMATION", [
+        { name: "deviceId", label: "Device ID/IMEI" },
+        { name: "deviceModel", label: "Device Model" },
+        { name: "serialNumber", label: "Serial Number" },
+        { name: "assignmentDate", label: "Assignment Date" }
+      ]);
+
+      addSection("INCIDENT DETAILS", [
+        { name: "incidentType", label: "Incident Type" },
+        { name: "severityLevel", label: "Severity Level" },
+        { name: "incidentDate", label: "Incident Date" },
+        { name: "incidentTime", label: "Incident Time" },
+        { name: "location", label: "Location" },
+        { name: "reportedToAuthorities", label: "Reported to Authorities" }
+      ]);
+
+      // Description section
+      checkPageBreak(40);
+      doc.setFontSize(12);
+      doc.text("INCIDENT DESCRIPTION", 20, y);
+      y += 8;
+      doc.setFontSize(9);
+      const description = formData.get("description") || 'No description provided';
+      const descLines = doc.splitTextToSize(description, 170);
+      descLines.forEach(line => {
+        checkPageBreak(6);
+        doc.text(line, 25, y);
+        y += 5;
+      });
       y += 10;
 
-      // Form fields
-      doc.setFontSize(12);
-      doc.text(`Driver Name: ${formData.get("driverName")}`, 20, y); y += 8;
-      doc.text(`Driver Number: ${formData.get("driverNumber")}`, 20, y); y += 8;
-      doc.text(`Supervisor Name: ${formData.get("supervisorName")}`, 20, y); y += 8;
-      doc.text(`Device ID/IMEI: ${formData.get("deviceId")}`, 20, y); y += 8;
-      doc.text(`Incident Type: ${formData.get("incidentType")}`, 20, y); y += 8;
-      doc.text(`Incident Date: ${formData.get("incidentDate")}`, 20, y); y += 8;
-      doc.text(`Location: ${formData.get("location")}`, 20, y); y += 8;
+      // Financial Information
+      addSection("FINANCIAL INFORMATION", [
+        { name: "purchaseValue", label: "Device Purchase Value" },
+        { name: "repairCost", label: "Estimated Repair Cost" }
+      ]);
 
-      // Description (multi-line)
-      const desc = doc.splitTextToSize(`Description: ${formData.get("description")}`, 170);
-      doc.text(desc, 20, y); 
-      y += desc.length * 8;
-
-      // Photo if uploaded
-      const photo = formData.get("photo");
-      if (photo && photo.size > 0) {
-        const imgData = await toBase64(photo);
-        doc.addImage(imgData, "JPEG", 20, y, 60, 40);
-        y += 50;
+      // Photos section
+      const photos = formData.get("photos");
+      if (photos && photos.size > 0) {
+        checkPageBreak(60);
+        doc.setFontSize(12);
+        doc.text("INCIDENT PHOTO", 20, y);
+        y += 10;
+        try {
+          const imgData = await toBase64(photos);
+          doc.addImage(imgData, "JPEG", 25, y, 80, 60);
+          y += 70;
+        } catch (error) {
+          doc.setFontSize(9);
+          doc.text("Error loading image", 25, y);
+          y += 10;
+        }
       }
 
-      // Signatures Row
-      let sigY = 260; // Fixed near bottom
-      const gpsSig = formData.get("gpsSignature");
-      const itSig = formData.get("itSignature");
-      const projSig = formData.get("projectSignature");
+      // Signatures section
+      doc.addPage();
+      y = 30;
+      doc.setFontSize(14);
+      doc.text("APPROVALS & SIGNATURES", 105, y, { align: "center" });
+      y += 20;
 
-      if (gpsSig && gpsSig.size > 0) {
-        const imgData = await toBase64(gpsSig);
-        doc.addImage(imgData, "PNG", 20, sigY, 40, 20);
-        doc.text("GPS Incharge", 30, sigY + 25, { align: "center" });
+      const signatures = [
+        { file: "employeeSignature", label: "Employee Signature", role: "Employee Acknowledgment" },
+        { file: "gpsSignature", label: "GPS Incharge Signature", role: "Verification & Review" },
+        { file: "itSignature", label: "IT Head Signature", role: "Technical Assessment" },
+        { file: "projectSignature", label: "Project Head Signature", role: "Final Approval" },
+        { file: "hrSignature", label: "HR/Admin Signature", role: "Administrative Review" }
+      ];
+
+      let sigX = 30;
+      let sigY = y;
+      let count = 0;
+
+      for (const sig of signatures) {
+        const sigFile = formData.get(sig.file);
+        if (sigFile && sigFile.size > 0) {
+          try {
+            const imgData = await toBase64(sigFile);
+            doc.addImage(imgData, "PNG", sigX, sigY, 40, 20);
+          } catch (error) {
+            doc.rect(sigX, sigY, 40, 20);
+          }
+        } else {
+          doc.rect(sigX, sigY, 40, 20);
+        }
+        
+        doc.setFontSize(9);
+        doc.text(sig.label, sigX + 20, sigY + 25, { align: "center" });
+        doc.text(sig.role, sigX + 20, sigY + 30, { align: "center" });
+        doc.text("Date: _______________", sigX + 20, sigY + 35, { align: "center" });
+        
+        count++;
+        if (count % 2 === 0) {
+          sigX = 30;
+          sigY += 50;
+        } else {
+          sigX = 120;
+        }
       }
-      if (itSig && itSig.size > 0) {
-        const imgData = await toBase64(itSig);
-        doc.addImage(imgData, "PNG", 85, sigY, 40, 20);
-        doc.text("IT Head", 105, sigY + 25, { align: "center" });
-      }
-      if (projSig && projSig.size > 0) {
-        const imgData = await toBase64(projSig);
-        doc.addImage(imgData, "PNG", 150, sigY, 40, 20);
-        doc.text("Project Head", 170, sigY + 25, { align: "center" });
-      }
+
+      // Footer for both pages
+      doc.setPage(1);
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+      doc.text("Page 1 of 2", 105, pageHeight - 10, { align: "center" });
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, pageHeight - 5, { align: "center" });
+
+      doc.setPage(2);
+      doc.text("Page 2 of 2", 105, pageHeight - 10, { align: "center" });
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, pageHeight - 5, { align: "center" });
 
       // Save PDF
-      doc.save("GPS_Incident_Report.pdf");
+      const fileName = `GPS_Incident_Report_${document.getElementById('reportId').textContent}.pdf`;
+      doc.save(fileName);
+      
+      // Show success message
+      alert('PDF report generated successfully! (2 pages)');
     });
 
+    // Helper function to convert file to base64
     function toBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -148,6 +530,24 @@
         reader.onerror = error => reject(error);
       });
     }
+
+    // Form validation
+    document.getElementById("incidentForm").addEventListener("input", function(e) {
+      if (e.target.type === "tel") {
+        // Remove non-numeric characters from phone inputs
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+      }
+    });
+
+    // Auto-fill incident date to not be in the future
+    document.querySelector('input[name="incidentDate"]').addEventListener("change", function(e) {
+      const selectedDate = new Date(e.target.value);
+      const today = new Date();
+      if (selectedDate > today) {
+        alert("Incident date cannot be in the future");
+        e.target.value = "";
+      }
+    });
   </script>
 </body>
 </html>
